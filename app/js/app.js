@@ -5,7 +5,9 @@ document.getElementById("save-button").addEventListener("click", () => {
 	// disallow empty Artist/Album inputs
 	if (artist.length == 0 || album.length == 0) {
 		console.log("Felder dürfen nicht leer sein.");
-		document.getElementById("banner-text").innerHTML = "Felder dürfen nicht leer sein.";
+		document.getElementById("banner-text").style.display = "flex";
+		document.getElementById("banner-text").style.backgroundColor = "var(--warning)";
+		document.getElementById("banner-text").innerHTML = "Eingabefelder dürfen nicht leer sein.";
 		return;
 	}
 	
@@ -17,20 +19,34 @@ document.getElementById("save-button").addEventListener("click", () => {
 		mediaType = "Vinyl";
 	}
 	
-	// save to db
+	//check if already in db
 	const sqlite3 = require("sqlite3").verbose();
 	var db = new sqlite3.Database("./app/db/albums.db");
-	db.run("INSERT INTO albums(artist,album,mediatype) VALUES(?,?,?)",artist, album, mediaType, function(err) {
+	var inDB = false;
+	
+	// tbd.
+	
+	if (inDB) {
+		console.log("'" + artist + " - " + album + " (" + mediaType + ")'" + " schon in der Datenbank vorhanden.");
+		document.getElementById("banner-text").style.display = "flex";
+		document.getElementById("banner-text").style.backgroundColor = "var(--warning)";
+		document.getElementById("banner-text").innerHTML = "'" + artist + " - " + album + " (" + mediaType + ")'" + " schon in der Datenbank vorhanden.";
+		db.close();
+		return;
+	}
+	
+	// save to db
+	db.run("INSERT INTO albums(artist,album,mediatype) VALUES(?,?,?)",artist, album, mediaType, (err) => {
 		if (err) {
-		  return console.log(err.message);
+		  return console.error(err.message);
 		}
-		// get the last insert id
-		console.log(`A row has been inserted with rowid ${this.lastID}`);
 	});
 	db.close();
 	
 	// show success message
 	console.log("'" + artist + " - " + album + " (" + mediaType + ")' eingetragen.");
+	document.getElementById("banner-text").style.display = "flex";
+	document.getElementById("banner-text").style.backgroundColor = "var(--info)";
 	document.getElementById("banner-text").innerHTML = "'" + artist + " - " + album + " (" + mediaType + ")' eingetragen.";
 	
 	// clear input

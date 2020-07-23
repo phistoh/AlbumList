@@ -21,6 +21,12 @@ function createWindow() {
 	win.loadFile("./app/index.html");
 }
 
+function buildTable() {
+	var test = [{artist: 'a', album: 'c', mediatype: 'CD'}, 
+	            {artist: 'ac', album: 'c', mediatype: 'CD'},
+				{artist: 'a', album: 'gt', mediatype: 'Vinyl'}
+			];
+}
 
 // init database
 var sqlite3 = require("sqlite3").verbose();
@@ -29,3 +35,4 @@ db.run("CREATE TABLE IF NOT EXISTS albums(artist TEXT, album TEXT, mediatype TEX
 db.close();
 
 app.on("ready", createWindow);
+app.on("ready", buildTable);
