@@ -1,6 +1,7 @@
 const { app, BrowserWindow } = require("electron");
 
 function createWindow() {
+	
 	// Create the browser window.
 	let win = new BrowserWindow({
 		width: 800,
@@ -19,5 +20,12 @@ function createWindow() {
 	// and load the index.html of the app.
 	win.loadFile("./app/index.html");
 }
+
+
+// init database
+var sqlite3 = require("sqlite3").verbose();
+var db = new sqlite3.Database("./app/db/albums.db");
+db.run("CREATE TABLE IF NOT EXISTS albums(artist TEXT, album TEXT, mediatype TEXT)");
+db.close();
 
 app.on("ready", createWindow);

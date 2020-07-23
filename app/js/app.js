@@ -1,15 +1,8 @@
-// note that the fs package does not exist on a normal browser
-const fs = require("fs");
-
-//a dialog box module from electron
-const { dialog } = require("electron").remote;
-
 document.getElementById("save-button").addEventListener("click", () => {
 	var artist = document.getElementById("artist-input").value;
 	var album = document.getElementById("album-input").value;
 	
 	// disallow empty Artist/Album inputs
-	
 	if (artist.length == 0 || album.length == 0) {
 		console.log("Felder dürfen nicht leer sein.");
 		document.getElementById("banner-text").innerHTML = "Felder dürfen nicht leer sein.";
@@ -24,12 +17,17 @@ document.getElementById("save-button").addEventListener("click", () => {
 		mediaType = "Vinyl";
 	}
 	
-	// save to file
-	// var stringToSave = artist + "|" + album + "|" + mediaType + "\n";
-	// fs.appendFile('./Albenliste.txt', stringToSave, (err) => {
-		// if (err) throw err;
-		// console.log('The "data to append" was appended to file!');
-	// });
+	// save to db
+	const sqlite3 = require("sqlite3").verbose();
+	var db = new sqlite3.Database("./app/db/albums.db");
+	db.run("INSERT INTO albums(artist,album,mediatype) VALUES(?,?,?)",artist, album, mediaType, function(err) {
+		if (err) {
+		  return console.log(err.message);
+		}
+		// get the last insert id
+		console.log(`A row has been inserted with rowid ${this.lastID}`);
+	});
+	db.close();
 	
 	// show success message
 	console.log("'" + artist + " - " + album + " (" + mediaType + ")' eingetragen.");
