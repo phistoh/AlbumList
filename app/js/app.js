@@ -1,7 +1,7 @@
 // init
 window.onload = function() {
-  setAmounts();
-  // build table
+	setAmounts();
+	buildTable();
 };
 
 document.getElementById("save-button").addEventListener("click", () => {
@@ -32,13 +32,16 @@ document.getElementById("save-button").addEventListener("click", () => {
 	// save to db
 	db.run("INSERT INTO albums(artist,album,mediatype) VALUES(?,?,?)", artist, album, mediaType, (err) => {
 		if (err) {
-			document.getElementById("banner-text").style.display = "flex";
-			document.getElementById("banner-text").style.backgroundColor = "var(--warning)";
-			document.getElementById("banner-text").innerHTML = "'" + artist + " - " + album + " (" + mediaType + ")'" + " schon in der Datenbank vorhanden.";
+			if (err.message.includes("UNIQUE")) {
+				document.getElementById("banner-text").style.display = "flex";
+				document.getElementById("banner-text").style.backgroundColor = "var(--warning)";
+				document.getElementById("banner-text").innerHTML = "'" + artist + " - " + album + " (" + mediaType + ")'" + " schon in der Datenbank vorhanden.";
+			}
 			return console.error(err.message);
 		}
-		// update Counts
+		// update counts and table
 		setAmounts();
+		updateTable(artist, album, mediaType);
 	});
 	db.close();
 	
@@ -78,4 +81,46 @@ function setAmounts() {
 	});
 	
 	db.close();
+}
+
+function buildTable() {
+	var tbl = document.getElementById("album-list").getElementsByTagName('tbody')[0];
+	const sqlite3 = require("sqlite3").verbose();
+	var db = new sqlite3.Database("./app/db/albums.db");
+	db.each("SELECT * FROM albums ORDER BY mediatype ASC, artist ASC, album ASC", (err, row) => {
+		if (err) {
+		  return console.error(err.message);
+		}
+		var newRow = tbl.insertRow();
+		
+		var artistCell = newRow.insertCell(0);
+		var albumCell = newRow.insertCell(1);
+		var mediaTypeCell = newRow.insertCell(2);
+		
+		var artistText = document.createTextNode(row.artist);
+		var albumText = document.createTextNode(row.album);
+		var mediaTypeText = document.createTextNode(row.mediatype);
+		
+		artistCell.appendChild(artistText);
+		albumCell.appendChild(albumText);
+		mediaTypeCell.appendChild(mediaTypeText);
+	});
+	db.close();
+}
+
+function updateTable(artist, album, mediaType) {
+	var tbl = document.getElementById("album-list").getElementsByTagName('tbody')[0];
+	var newRow = tbl.insertRow();
+	
+	var artistCell = newRow.insertCell(0);
+	var albumCell = newRow.insertCell(1);
+	var mediaTypeCell = newRow.insertCell(2);
+	
+	var artistText = document.createTextNode(artist);
+	var albumText = document.createTextNode(album);
+	var mediaTypeText = document.createTextNode(mediaType);
+	
+	artistCell.appendChild(artistText);
+	albumCell.appendChild(albumText);
+	mediaTypeCell.appendChild(mediaTypeText);
 }
