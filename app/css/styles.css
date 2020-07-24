@@ -50,3 +50,8 @@ hr.solid {
   border-top: 2px solid var(--divider);
   margin: 0px 20px;
 }
+
+table {
+	margin: 0px 20px 8px;
+	padding: 4px 0px;
+}
