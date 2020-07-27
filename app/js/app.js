@@ -14,6 +14,7 @@ document.getElementById("save-button").addEventListener("click", () => {
 		document.getElementById("banner-text").style.display = "flex";
 		document.getElementById("banner-text").style.backgroundColor = "var(--warning)";
 		document.getElementById("banner-text").innerHTML = "Eingabefelder dürfen nicht leer sein.";
+		// document.getElementById("album-list-container").style.height = "297px";
 		return;
 	}
 	
@@ -87,7 +88,7 @@ function buildTable() {
 	var tbl = document.getElementById("album-list").getElementsByTagName('tbody')[0];
 	const sqlite3 = require("sqlite3").verbose();
 	var db = new sqlite3.Database("./app/db/albums.db");
-	db.each("SELECT * FROM albums ORDER BY mediatype ASC, artist ASC, album ASC", (err, row) => {
+	db.each("SELECT * FROM albums ORDER BY mediatype ASC, artist COLLATE NOCASE ASC, album COLLATE NOCASE ASC", (err, row) => {
 		if (err) {
 		  return console.error(err.message);
 		}
