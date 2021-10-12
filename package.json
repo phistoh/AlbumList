@@ -15,7 +15,7 @@
   "author": "Moritz",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^9.4.0",
+    "electron": "^11.5.0",
     "electron-rebuild": "^1.11.0"
   },
   "dependencies": {
