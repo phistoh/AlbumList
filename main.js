@@ -1,7 +1,6 @@
 const { app, BrowserWindow } = require("electron");
 
-function createWindow() {
-	
+function createWindow() {	
 	// Create the browser window.
 	let win = new BrowserWindow({
 		width: 800,
@@ -13,6 +12,7 @@ function createWindow() {
 		autoHideMenuBar: true,
 		webPreferences: {
 			nodeIntegration: true,
+			contextIsolation: false,
 			enableRemoteModule: true
 		}
 	});
@@ -27,4 +27,8 @@ var db = new sqlite3.Database("./app/db/albums.db");
 db.run("CREATE TABLE IF NOT EXISTS albums(artist TEXT, album TEXT, mediatype TEXT, UNIQUE(artist, album, mediatype))");
 db.close();
 
-app.on("ready", createWindow);
+app.whenReady().then(createWindow);
+
+try {
+	require('electron-reloader')(module)
+} catch {}

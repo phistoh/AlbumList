@@ -100,8 +100,14 @@ function buildTable() {
 		newRow.addEventListener("click", selectTableElement);
 		
 		var artistCell = newRow.insertCell(0);
+		artistCell.addEventListener('click', listenForDoubleClick);
+		artistCell.onblur = this.contentEditable=false;
 		var albumCell = newRow.insertCell(1);
+		albumCell.addEventListener('click', listenForDoubleClick);
+		albumCell.onblur = this.contentEditable=false;
 		var mediaTypeCell = newRow.insertCell(2);
+		mediaTypeCell.addEventListener('click', listenForDoubleClick);
+		mediaTypeCell.onblur = this.contentEditable=false;
 		
 		var artistText = document.createTextNode(row.artist);
 		var albumText = document.createTextNode(row.album);
@@ -120,8 +126,14 @@ function updateTable(artist, album, mediaType) {
 	newRow.addEventListener("click", selectTableElement);
 	
 	var artistCell = newRow.insertCell(0);
+	artistCell.addEventListener('click', listenForDoubleClick);
+	artistCell.onblur = this.contentEditable=false;
 	var albumCell = newRow.insertCell(1);
+	albumCell.addEventListener('click', listenForDoubleClick);
+	albumCell.onblur = this.contentEditable=false;
 	var mediaTypeCell = newRow.insertCell(2);
+	mediaTypeCell.addEventListener('click', listenForDoubleClick);
+	mediaTypeCell.onblur = this.contentEditable=false;
 	
 	var artistText = document.createTextNode(artist);
 	var albumText = document.createTextNode(album);
@@ -137,6 +149,15 @@ function selectTableElement() {
 	for (let sibling of this.parentNode.children) {
 		if (sibling !== this) sibling.classList.remove('selected');
 	}
+}
+
+function listenForDoubleClick() {
+	this.contentEditable = true;
+	setTimeout(function() {
+		if (document.activeElement !== this) {
+			this.contentEditable = false;
+		}
+		}, 300);
 }
 
 function compareTableEntries(a, b) {
