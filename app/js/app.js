@@ -2,6 +2,10 @@
 window.onload = function() {
 	setAmounts();
 	buildTable();
+	var tbl = document.getElementById("album-list")
+	tbl.querySelectorAll('th').forEach((th, position) => {
+		th.addEventListener('click', evt => sortTable(position));
+	});
 };
 
 document.getElementById("save-button").addEventListener("click", () => {
@@ -93,6 +97,7 @@ function buildTable() {
 		  return console.error(err.message);
 		}
 		var newRow = tbl.insertRow();
+		newRow.addEventListener("click", selectTableElement);
 		
 		var artistCell = newRow.insertCell(0);
 		var albumCell = newRow.insertCell(1);
@@ -112,6 +117,7 @@ function buildTable() {
 function updateTable(artist, album, mediaType) {
 	var tbl = document.getElementById("album-list").getElementsByTagName('tbody')[0];
 	var newRow = tbl.insertRow();
+	newRow.addEventListener("click", selectTableElement);
 	
 	var artistCell = newRow.insertCell(0);
 	var albumCell = newRow.insertCell(1);
@@ -124,4 +130,37 @@ function updateTable(artist, album, mediaType) {
 	artistCell.appendChild(artistText);
 	albumCell.appendChild(albumText);
 	mediaTypeCell.appendChild(mediaTypeText);
+}
+
+function selectTableElement() {
+	this.classList.add('selected');
+	for (let sibling of this.parentNode.children) {
+		if (sibling !== this) sibling.classList.remove('selected');
+	}
+}
+
+function compareTableEntries(a, b) {
+	return a.localeCompare(b, 'en', {'sensitivity': 'base'});
+}
+
+function sortTable(colnum) {
+	var tbl = document.getElementById("album-list")
+	let rows = Array.from(tbl.querySelectorAll('tr'));
+	rows = rows.slice(1);
+	
+	// offset by one because n-th child is-1 based and colnums are 0-based
+	colnum = colnum + 1;
+	
+	let qs = `td:nth-child(${colnum})`;
+
+	rows.sort( (r1,r2) => {
+		let t1 = r1.querySelector(qs);
+		let t2 = r2.querySelector(qs);
+		
+		return compareTableEntries(t1.textContent, t2.textContent);
+	});
+
+	rows.forEach(row => tbl.appendChild(row));
+	
+	
 }

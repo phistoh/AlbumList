@@ -72,6 +72,10 @@ body {
 	background-color: var(--highlight);
 }
 
+.selected {
+	background-color: var(--info);
+}
+
 .radio-container {
 	display: flex;
 	justify-content: center;
