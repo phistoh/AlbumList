@@ -20,7 +20,7 @@
     "electron-builder": "^22.14.13",
     "electron-rebuild": "^3.2.7",
     "electron-reloader": "^1.2.3",
-    "sqlite3": "^5.0.2"
+    "sqlite3": "^5.0.3"
   },
   "dependencies": {
     "node-gyp": "^9.0.0",
